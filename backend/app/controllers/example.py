@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from app.auth import get_current_user
 
 router = APIRouter(prefix="/example", tags=["example"])
 
@@ -11,3 +13,8 @@ def say_hello(name: str):
 @router.get("/add")
 def add(a: int, b: int):
     return {"result": a + b}
+
+
+@router.get("/protected")
+def protected_route(user: dict = Depends(get_current_user)):
+    return {"message": f"Hello {user.get('preferred_username', 'unknown')}"}
